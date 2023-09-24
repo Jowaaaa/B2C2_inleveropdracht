@@ -1,0 +1,32 @@
+﻿@model B2C2Frietzaak.Models.ViewModels.ProductsViewModel
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
+<body class="bg-dark text-white-50" style="padding-top: 100px">
+    <div class="container ms-0 w-75">
+        <div class="row">
+        @foreach (var item in Model!.Products!) //(https://stackoverflow.com/questions/76723125/dereference-of-a-possibly-null-reference-despite-checking-that-the-value-is-not)
+            {
+                <div class="col-md-6 mb-4 border m-4" style="width: 350px; height: 350px">
+                    <p class="text-center">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </p>
+                    <p class="text-center">
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </p>
+                    <p class="text-center">
+                        <img src="@item.ImageUrl" alt="Image" style="height: 200px; width: 200px" />
+                    </p>
+                    <button class="disabled float-end btn btn-outline-success bi bi-cart"> Toevoegen</button>
+            </div>
+            }
+    </div>
+    </div>
+</body>
+</html>

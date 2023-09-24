@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
+</head>
+<body class="bg-dark text-white-50" style="padding-top: 100px">
+
+    @if (User.IsInRole("Admin"))
+    {
+        <h1 class="text-center">Welkom @User.Identity.Name</h1>
+    }
+    else
+    {
+        <h1 class="text-center">Welkom @User.Identity.Name</h1>
+    }
+</body>
+</html>
