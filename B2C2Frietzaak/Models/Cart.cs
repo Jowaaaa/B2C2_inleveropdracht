@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace B2C2Frietzaak.Models
 {
@@ -6,7 +8,11 @@ namespace B2C2Frietzaak.Models
     {
         [Key]
         public int CartId { get; set; }
-        public string? UserId { get; set;}
+        [ForeignKey("UserId")]
+        public string? UserId { get; set; }
+        [ForeignKey("UserId")]
+        public IdentityUser? User { get; set; }
         public List<CartItem>? CartItems { get; set; }
+
     }
 }

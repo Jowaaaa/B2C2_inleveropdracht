@@ -4,6 +4,7 @@ using B2C2Frietzaak.Models.ViewModels;
 using Humanizer.Localisation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace B2C2Frietzaak.Controllers
 {
@@ -17,6 +18,8 @@ namespace B2C2Frietzaak.Controllers
             _context = context;
         }
         
+
+
         public IActionResult Orders()
         {
             List<Product> products = _context.Products.ToList();
@@ -30,9 +33,15 @@ namespace B2C2Frietzaak.Controllers
             return View(viewModel);
         }
 
-        //public IActionResult Orders()
-        //{
-        //    return View();
-        //}
+        public IActionResult AddToCart(Product item)
+        {  
+            
+            _context.Products.Add(item);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+        
+        
     }
 }
