@@ -9,7 +9,7 @@ namespace B2C2Frietzaak.Models
     public class Order
     {
         public int OrderId { get; set; }
-        public int CartId { get; set; }
+        //public int CartId { get; set; }
         [ForeignKey("UserId")]
         [Required]
         public string? UserId { get; set; }
@@ -17,7 +17,9 @@ namespace B2C2Frietzaak.Models
         public IdentityUser? User { get; set; }
         [Required]
         public DateTime? OrderTime { get; set; } = DateTime.Now;
-        public List<Cart>? Cart { get; set; }
+        public float Total {  get; set; }
+        public string? OrderItems { get; set; }
+        public List<CartItem>? CartItems { get; set; }
 
     }
 }

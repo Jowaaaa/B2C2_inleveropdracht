@@ -1,0 +1,47 @@
+﻿@model List<Order>
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
+<body class="bg-dark text-white-50" style="padding-top: 100px">
+    <div>
+        <h1>User informatie</h1>
+
+        @if (Model.Count == 0)
+        {
+            <p>Nog geen orders geplaatst.</p>
+        }
+        else
+        {
+            <table class="table table-dark text-white">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Totaal</th>
+                        <th>Tijd</th>
+                        <th>Items in bestelling</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td>@order.OrderId</td>
+                            <td>@order.Total</td>
+                            <td>@order.OrderTime</td>
+                            <td>@order.OrderItems</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+
+
+    </div>
+</body>
+</html>

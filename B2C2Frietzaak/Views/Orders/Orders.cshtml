@@ -1,4 +1,8 @@
-﻿@model B2C2Frietzaak.Models.ViewModels.ProductsViewModel
+﻿@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json;
+@using System.Text
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model B2C2Frietzaak.Models.ViewModels.ProductsViewModel
 
 <html>
 <head>
@@ -9,62 +13,95 @@
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
 <body class="bg-dark text-white-50" style="padding-top: 100px">
+    <div class="container">
         <div class="row">
-            <div class="col-md-4 order-2">
-                <div class="border mt-4 p-3" style="height: 400px; width:300px">
-                    <h5 class="text-end">Cart</h5>
-                @if (Model!.Carts! == null)
-                {
-                    <p class="fst-italic">No Items In Cart</p>
-                }
-                @* @foreach (var item in Model!.Carts!)
-                    {
-                        @Html.DisplayFor(modelItem => item.CartItems)
-                   
-                } *@
-                                    
-            </div>
-            </div>
-            <div class="col-md-8 order-1">
+            <div class="col-md-8">
                 <div class="row">
-                @foreach (var item in Model!.Products!) //(https://stackoverflow.com/questions/76723125/dereference-of-a-possibly-null-reference-despite-checking-that-the-value-is-not)
-                {
-                    <form asp-action="AddToCart" method="post">
-                        <td>
-                            <label asp-for="@item.ProductId" hidden></label>
-                            <input type="text" asp-for="@item.ProductId" hidden />
-                        </td>
-                        <td>
-                            <label asp-for="@item.Name">@item.Name</label>
-                            <input type="text" asp-for="@item.Name" hidden/>
-                        </td>
-                        <td>
-                            <label asp-for="@item.Price">@item.Price</label>
-                            <input type="text" asp-for="@item.Price" hidden />
-                        </td>
-                        <td>
-                            <label asp-for="@item.ImageUrl" hidden></label>
-                            <input type="text" asp-for="@item.ImageUrl" hidden />
-                        </td>
-                        <button type="submit" class="float-end btn btn-outline-success bi bi-cart"> Toevoegen</button>
-
-                    </form>
-                    @* <div class="col-md-6 mb-4 border p-2 m-4" style="width: 350px; height: 350px">
-                        <p class="text-center">
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </p>
-                        <p class="text-center">
-                            @Html.DisplayFor(modelItem => item.Price)
-                        </p>
-                        <p class="text-center">
-                            <img src="@item.ImageUrl" alt="Image" style="height: 200px; width: 200px" />
-                        </p>
-                        <button asp-controller="Orders" asp-action="AddToCart" class="float-end btn btn-outline-success bi bi-cart"> Toevoegen</button>
-                    </div> *@
-                }
+                    @foreach (var item in Model!.Products!)
+                    {
+                        <div class="col-md-6">
+                            <form asp-action="AddToCart" method="post">
+                                <div class="card bg-dark text-white-50 mt-3" style="width: 350px">
+                                    <div class="card-header text-center">
+                                        <h3>@item.Name</h3>
+                                        <label asp-for="@item.ProductId" hidden></label>
+                                        <input type="text" asp-for="@item.ProductId" hidden />
+                                        <label asp-for="@item.Name" hidden>@item.Name</label>
+                                        <input type="text" asp-for="@item.Name" hidden />
+                                        <label asp-for="@item.ImageUrl" hidden></label>
+                                        <input type="text" asp-for="@item.ImageUrl" hidden />
+                                        <div class="card-img-top">
+                                            <img src="@item.ImageUrl" width="100" height="100" alt="@item.Name" />
+                                            <div class="card-footer">
+                                                <label asp-for="@item.Price">€@item.Price</label>
+                                                <input type="text" asp-for="@item.Price" hidden />
+                                                <button type="submit" class="float-end btn btn-outline-success bi bi-cart"> Toevoegen</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    }
+                </div>
             </div>
+            <div class="col-md-4">
+                <div class="card bg-dark text-white-50 mt-3" style="width: 350px">
+                    <div class="card-header">
+                        <h3 class="text-center">Cart</h3>
+                    </div>
+                    <div class="card-body">
+                        @{
+                            // Deserialize the Session Storage and map items for layout
+                            var cartItemsBytes = HttpContextAccessor.HttpContext.Session.Get("CartItems");
+                            List<CartItem> cartItems = null;
+
+                            if (cartItemsBytes != null)
+                            {
+                                var cartItemsJson = Encoding.UTF8.GetString(cartItemsBytes);
+                                cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartItemsJson);
+                            }
+                        }
+                        <table class="table table-dark text-white-50">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Prijs</th>
+                                    <th>Aantal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                @if (cartItems != null && cartItems.Any())
+                                {
+                                    @foreach (var item in cartItems)
+                                    {
+                                        <tr>
+                                            <td>@item.ProductName</td>
+                                            <td>@item.Price</td>
+                                            <td>@item.Quantity</td>
+                                            <td><a asp-action="DeleteFromOrder" class="btn btn-danger btn-sm bi bi-x"></a></td>
+                                        </tr>
+
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="fst-italic">Nog geen items in Cart</p>
+                                }
+                            </tbody>
+                        </table>
+
+
+                        <div class="card-footer text-end">
+                            <form asp-action="OrderCheck" method="post">
+                                <button type="submit" class="btn btn-outline-success bi bi-wallet2"> Bestellen</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
+    </div>
 </body>
 </html>

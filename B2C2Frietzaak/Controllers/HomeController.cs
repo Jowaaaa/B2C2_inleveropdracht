@@ -20,7 +20,7 @@ namespace B2C2Frietzaak.Controllers
         {
             return View();
         }
-
+        [Route("/private")] //Changed route to test
         public IActionResult Privacy()
         {
             return View();

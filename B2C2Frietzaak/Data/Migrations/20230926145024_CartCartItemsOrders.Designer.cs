@@ -4,6 +4,7 @@ using B2C2Frietzaak.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2C2Frietzaak.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230926145024_CartCartItemsOrders")]
+    partial class CartCartItemsOrders
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,15 @@ namespace B2C2Frietzaak.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CartId"));
 
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("CartId");
+
+                    b.HasIndex("OrderId");
 
                     b.HasIndex("UserId");
 
@@ -54,9 +62,6 @@ namespace B2C2Frietzaak.Data.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<float?>("Price")
                         .HasColumnType("real");
 
@@ -73,8 +78,6 @@ namespace B2C2Frietzaak.Data.Migrations
 
                     b.HasIndex("CartId");
 
-                    b.HasIndex("OrderId");
-
                     b.HasIndex("ProductId");
 
                     b.ToTable("CartItems");
@@ -88,15 +91,12 @@ namespace B2C2Frietzaak.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
 
-                    b.Property<string>("OrderItems")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CartId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("OrderTime")
                         .IsRequired()
                         .HasColumnType("datetime2");
-
-                    b.Property<float>("Total")
-                        .HasColumnType("real");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -338,6 +338,10 @@ namespace B2C2Frietzaak.Data.Migrations
 
             modelBuilder.Entity("B2C2Frietzaak.Models.Cart", b =>
                 {
+                    b.HasOne("B2C2Frietzaak.Models.Order", null)
+                        .WithMany("Cart")
+                        .HasForeignKey("OrderId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
@@ -350,10 +354,6 @@ namespace B2C2Frietzaak.Data.Migrations
                     b.HasOne("B2C2Frietzaak.Models.Cart", "Cart")
                         .WithMany("CartItems")
                         .HasForeignKey("CartId");
-
-                    b.HasOne("B2C2Frietzaak.Models.Order", null)
-                        .WithMany("CartItems")
-                        .HasForeignKey("OrderId");
 
                     b.HasOne("B2C2Frietzaak.Models.Product", "Product")
                         .WithMany()
@@ -435,7 +435,7 @@ namespace B2C2Frietzaak.Data.Migrations
 
             modelBuilder.Entity("B2C2Frietzaak.Models.Order", b =>
                 {
-                    b.Navigation("CartItems");
+                    b.Navigation("Cart");
                 });
 #pragma warning restore 612, 618
         }

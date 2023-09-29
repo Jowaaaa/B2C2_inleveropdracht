@@ -1,0 +1,52 @@
+﻿@model List<CartItem>
+
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
+<body class="bg-dark text-white-50" style="padding-top: 100px">
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            <div class="card-body">
+                @{
+                    var totalQuantity = Model.Sum(item => item.Quantity);
+                    var totalPrice = Model.Sum(item => item.Price * item.Quantity);
+                }
+                <table class="table text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Prijs</th>
+                            <th scope="col">Aantal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.ProductName </td>
+                                <td>€@item.Price </td>
+                                <td>@item.Quantity Stuk(s)</td>
+                            </tr>
+                            
+                        }                  
+                    </tbody>
+                </table>
+                <p class="text-end fw-bold">Totaal: €@totalPrice</p>               
+            </div>
+            <a class="btn btn-success" asp-controller="Orders" asp-action="FinalizeOrder">Bestelling Bevestigen</a>
+        </div>
+
+    </div>
+
+
+
+
+
+</body>
+</html>

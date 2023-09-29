@@ -6,21 +6,31 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
-
-
-
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));
+
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
+
         builder.Services.AddControllersWithViews();
+//Session Management
+        builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        builder.Services.AddDistributedMemoryCache(); 
+        builder.Services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(10);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+        });
 
         var app = builder.Build();
 
@@ -42,6 +52,8 @@ public class Program
         app.UseRouting();
 
         app.UseAuthorization();
+        app.UseSession();  // Session Management
+
 
         app.MapControllerRoute(
             name: "default",
@@ -80,8 +92,6 @@ public class Program
                 //voeg account toe aan de Admin Role
                 await userManager.AddToRoleAsync(user, "Admin");
             }
-          
-
            
         }
 

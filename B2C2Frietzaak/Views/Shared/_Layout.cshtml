@@ -14,7 +14,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+        <nav class="navbar fixed-top navbar-expand-sm navbar-toggleable-sm navbar-dark bg-success shadow-lg mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
                     <img src="/Assets/LogoFrietzaak.png" width="75" height="50" title="Logo" alt="Logo" />
@@ -32,19 +32,22 @@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item mx-1">
-                                    <a class="btn btn-outline-secondary nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                                 </li>
                                 <li class="nav-item mx-1">
-                                    <a class="btn btn-outline-secondary nav-link text-white-50" asp-area="" asp-controller="Products" asp-action="ProductsOverview">Producten</a>
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Products" asp-action="ProductsOverview">Beheer Producten</a>
+                                </li>
+                                <li class="nav-item mx-1">
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Admin" asp-action="ListUsers">Beheer Klanten</a>
                                 </li>
                             }
                             else
                             {
                                 <li class="nav-item mx-1">
-                                    <a class="btn btn-outline-secondary nav-link text-white-50" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                                 </li>
                                 <li class="nav-item mx-1">
-                                    <a class="btn btn-outline-secondary nav-link text-white-50" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
                                 </li>
                             }}
                     </ul>

@@ -10,15 +10,26 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
 </head>
-<body class="bg-dark text-white-50" style="padding-top: 100px">
+<body class="bg-image text-white-50"
+      style="background-image: url('https://media.discordapp.net/attachments/959570592028323882/1156627260657377300/B2C2BG.jpg?ex=6515a894&is=65145714&hm=1c8290002755d33f8b869b3376450dc0b2df00319c7d568afd3ee608898320ed');
+                background-size: cover;
+                padding-top: 100px"> @* https://stackoverflow.com/questions/43214466/resizing-background-image-with-bootstrap *@
+      <div class="text-center text-white pt-5">
+          <h5>Welkom bij</h5>
+          <h1>De Frietzaak</h1>
+      
 
     @if (User.IsInRole("Admin"))
     {
-        <h1 class="text-center">Welkom @User.Identity.Name</h1>
+            
     }
     else
     {
-        <h1 class="text-center">Welkom @User.Identity.Name</h1>
+            <div style="position: absolute; top: 80%; left: 50%; transform: translate(-50%, -50%);">
+                <a class="btn btn-success nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a> 
+            </div>
     }
+
+    </div>
 </body>
 </html>
