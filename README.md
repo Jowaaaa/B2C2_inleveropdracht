@@ -7,6 +7,6 @@ School Project using ASP.NET CORE 7, Entity Framework Core and MSSQL Server. The
 - Add functionality so the admin can upload images -> store Url in DB and Image in wwwroot folder.
 - Add pop-up/modal when ordering with sauce options
 - Add Admin input to discounts or special menu items.
- - Possibly based on user behaviour.
+   - Possibly based on user behaviour.
 - Add Categories and filter the products based on category.
- - Searchbar option 
+   - Searchbar option 
