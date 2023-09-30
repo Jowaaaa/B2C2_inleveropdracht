@@ -21,14 +21,14 @@ namespace B2C2Frietzaak.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IHttpContextAccessor? _httpContextAccessor;
         private readonly UserManager<IdentityUser> _userManager;
-        
+
         public OrdersController(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<IdentityUser> userManager)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
         }
-        
+
 
 
         public IActionResult Orders()
@@ -44,7 +44,7 @@ namespace B2C2Frietzaak.Controllers
             return View(viewModel);
         }
 
-        
+
 
         public IActionResult AddToCart(Product item)
         {
@@ -65,7 +65,7 @@ namespace B2C2Frietzaak.Controllers
 
             if (existingCartItem != null)
             {
-                existingCartItem.Quantity++;        
+                existingCartItem.Quantity++;
                 existingCartItem.Price = existingCartItem.Quantity * item.Price;
             }
             else
@@ -82,31 +82,13 @@ namespace B2C2Frietzaak.Controllers
             //Serialize Objects
             HttpContext.Session.Set("CartItems", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cartItems)));
 
+            int cartItemCount = cartItems.Sum(ci => ci.Quantity);
+
+
+            ViewData["CartItemCount"] = cartItemCount;
+
             return RedirectToAction("Orders", cartItems);
         }
-
-
-        //if (CartItems == null)
-        //{
-        //    CartItems = $"{item.Name} - {item.Price}";
-        //}
-        //TempData.Keep("CartItems");
-
-        //_context.Products.Add(item);
-        //_context.SaveChanges(); //check inserted columns 
-
-        //write check to see if product already in cart if so, +1 quantity
-        //Make use of ViewData //Sessieobject session variable
-        //ViewBag.ProductId = item.ProductId;
-        //ViewBag.Name = item.Name;
-        //ViewBag.Price = item.Price;
-        //ViewBag.ImageUrl = item.ImageUrl;
-
-        //string CartString = JsonConvert.SerializeObject(item);
-        //_httpContextAccessor!.HttpContext!.Session.SetString("CartItems", CartString);
-
-
-        //return RedirectToAction("Orders");
 
 
         public IActionResult OrderCheck()
@@ -127,11 +109,12 @@ namespace B2C2Frietzaak.Controllers
             return View("OrderCheck", cartItems);
         }
 
-        public async Task <IActionResult> FinalizeOrder([Bind("OrderId,userId,OrderTime,Total,OrderItems")] Order Order)
+        public async Task<IActionResult> FinalizeOrder([Bind("OrderId,userId,OrderTime,Total,OrderItems")] Order Order)
         {
             var userId = _userManager.GetUserId(User);
             var OrderTime = DateTime.Now;
             List<CartItem> cartItems;
+
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
@@ -142,7 +125,7 @@ namespace B2C2Frietzaak.Controllers
             {
                 return Content("No Cart Available");
             }
-            float total = cartItems.Sum(item => (float)(item.Price * item.Quantity));
+            float total = cartItems.Sum(item => (float)(item.Price));
             var orderItem = cartItems.Select(item => item.ProductName);
             string productNamesString = string.Join(", ", orderItem);
 
@@ -152,8 +135,8 @@ namespace B2C2Frietzaak.Controllers
                 OrderTime = OrderTime,
                 Total = total,
                 OrderItems = productNamesString,
-                
-                 
+
+
             };
 
             _context.Orders.Add(order);
@@ -162,10 +145,54 @@ namespace B2C2Frietzaak.Controllers
             return View();
         }
 
-        public IActionResult DeleteFromOrder()
+        public IActionResult DeleteFromOrder(int productId)
         {
+
+            List<CartItem> cartItems;
+
+            if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
+            {
+                cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
+            }
+            else
+            {
+                cartItems = new List<CartItem>();
+            }
+
+            // Find the item to remove by ProductId
+            var itemToRemove = cartItems.FirstOrDefault(ci => ci.ProductId == productId);
+
+            if (itemToRemove != null)
+            {
+                // Remove the item from the cart
+                cartItems.Remove(itemToRemove);
+
+                // Update the session with the modified cart
+                HttpContext.Session.Set("CartItems", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cartItems)));
+            }
+
+            // Redirect back to the cart page or another appropriate page
             return RedirectToAction("Orders");
         }
-    }   
+        public IActionResult GetCartItemCount()
+        {
+            List<CartItem> cartItems;
+
+            if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
+            {
+                // Deserialize objects if items are in the cart
+                cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
+            }
+            else
+            {
+                // Initialize a new CartItem List
+                cartItems = new List<CartItem>();
+            }
+
+            int cartItemCount = cartItems.Sum(ci => ci.Quantity);
+
+            return Json(cartItemCount);
+        }
+    }
 }
-        
+

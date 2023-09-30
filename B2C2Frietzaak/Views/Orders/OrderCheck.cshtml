@@ -15,7 +15,7 @@
             <div class="card-body">
                 @{
                     var totalQuantity = Model.Sum(item => item.Quantity);
-                    var totalPrice = Model.Sum(item => item.Price * item.Quantity);
+                    var totalPrice = Model.Sum(item => item.Price);
                 }
                 <table class="table text-white">
                     <thead>

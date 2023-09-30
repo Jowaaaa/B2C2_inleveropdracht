@@ -25,6 +25,7 @@ namespace B2C2Frietzaak.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
+            HttpContext.Session.Clear(); //Clear items from session when logged out
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)

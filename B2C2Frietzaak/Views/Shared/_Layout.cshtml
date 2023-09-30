@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using System.Text;
+@using Newtonsoft.Json;
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,6 +14,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/B2C2Frietzaak.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
 <body>
     <header>
@@ -49,8 +54,10 @@
                                 <li class="nav-item mx-1">
                                     <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
                                 </li>
+
                             }}
-                    </ul>
+                    </ul>    
+                    <partial name="_CartIconPartial"/>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -67,6 +74,7 @@
             &copy; 2023 - B2C2Frietzaak - Job van der Wal
         </div>
     </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

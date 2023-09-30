@@ -80,7 +80,13 @@
                                             <td>@item.ProductName</td>
                                             <td>@item.Price</td>
                                             <td>@item.Quantity</td>
-                                            <td><a asp-action="DeleteFromOrder" class="btn btn-danger btn-sm bi bi-x"></a></td>
+
+                                            <td>
+                                                <form asp-action="DeleteFromOrder" method="post">
+                                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                                    <button type="submit" class="btn btn-danger btn-sm bi bi-x"></button>
+                                                </form>
+                                            </td>
                                         </tr>
 
                                     }
@@ -91,6 +97,7 @@
                                 }
                             </tbody>
                         </table>
+                        <p>@ViewData["CartItemCount"]</p>
 
 
                         <div class="card-footer text-end">

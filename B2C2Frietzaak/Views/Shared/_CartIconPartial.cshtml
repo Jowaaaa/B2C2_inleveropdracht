@@ -1,0 +1,23 @@
+﻿<a href="@Url.Action("Orders", "Orders")" class="nav-link">
+    <i class="bi bi-cart text-white"></i> 
+    <span id="cart-item-count" class="badge badge-pill badge-danger text-danger">@ViewData["CartItemCount"]</span>
+</a>
+@* script on jQuery te laden *@
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+
+@* specify correct Url.Action :) *@
+<script>
+    function updateCartItemCount() {
+        $.ajax({    
+            url: '@Url.Action("GetCartItemCount", "Orders")', 
+            method: 'GET',
+            success: function (data) {
+                $('#cart-item-count').text(data);
+            },
+            error: function (error) {
+                console.error('Error fetching cart item count:', error);
+            }
+        });
+    }
+    updateCartItemCount();
+</script>
