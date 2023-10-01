@@ -17,5 +17,7 @@ namespace B2C2Frietzaak.Models
         [Required]
         [Display(Name = "Afbeelding")]
         public string? ImageUrl { get; set; }
+        public string? Category {  get; set; }
+
     }
 }

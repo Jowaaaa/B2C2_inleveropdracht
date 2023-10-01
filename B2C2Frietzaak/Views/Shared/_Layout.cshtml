@@ -10,7 +10,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - B2C2Frietzaak</title>
+    <title>B2C2Frietzaak</title>
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/B2C2Frietzaak.styles.css" asp-append-version="true" />
@@ -32,8 +33,6 @@
                     <ul class="navbar-nav text-white-50 flex-grow-1">
                         @if (SignInManager.IsSignedIn(User))
                         {
-
-
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item mx-1">

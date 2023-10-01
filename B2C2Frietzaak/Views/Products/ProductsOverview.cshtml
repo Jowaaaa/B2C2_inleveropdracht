@@ -8,9 +8,10 @@
 </head>
 <body class="bg-dark text-white-50" style="padding-top: 100px">
     <div>
-        <h1 class="float-start">
-            Alle Producten
-        </h1>
+        <div class="d-flex justify-content-between">
+            <h1>Alle Producten</h1>
+            <a class="btn btn-outline-primary bi bi-arrow-right" asp-controller="Sauces" asp-action="SaucesOverview"> Naar sauzen</a>
+        </div>
         <table class="table table-dark text-white-50">
             <thead>
                 <tr>
@@ -19,6 +20,9 @@
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.Price)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Category)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.ImageUrl)
@@ -39,6 +43,9 @@
                             @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td>
+                            @Html.DisplayFor(modelItem => item.Category)
+                        </td>
+                        <td>
                             <img src="@item.ImageUrl" alt="@item.Name" style="height: 100px; width: 100px"/>
                         </td>
                         <td>
@@ -54,5 +61,6 @@
     <div class="d-flex">
     <a class="btn btn-outline-success flex-column ms-auto" asp-action="AddProducts" >Product Toevoegen</a>
     </div>
+    
 </body>
 </html> 

@@ -14,5 +14,7 @@ namespace B2C2Frietzaak.Data
         public DbSet<Cart> Cart { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<Sauce> Sauces { get; set; }
+        //public DbSet<Category> Categories { get; set; }
     }
 }

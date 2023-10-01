@@ -1,4 +1,5 @@
 ﻿using B2C2Frietzaak.Data;
+using B2C2Frietzaak.Data.Migrations;
 using B2C2Frietzaak.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +25,13 @@ namespace B2C2Frietzaak.Controllers
         public async Task<IActionResult> ProductsOverview()
         {
             return _context.Products != null ?
-                        View(await _context.Products.ToListAsync()) :
-                        Problem("Entity set 'AppDbContext.Products'  is null.");
+                View(await _context.Products.ToListAsync()) :
+                Problem("Entity set 'AppDbContext.Products = null");
         }
 
+
         //Products Add
-        public async Task<IActionResult> AddProducts([Bind("ProductId,Name,Price,ImageUrl")] Product product)
+        public async Task<IActionResult> AddProducts([Bind("ProductId,Name,Price,ImageUrl,Category")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -59,7 +61,7 @@ namespace B2C2Frietzaak.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProducts(int id, [Bind("ProductId,Name,Price,ImageUrl")] Product product)
+        public async Task<IActionResult> EditProducts(int id, [Bind("ProductId,Name,Price,ImageUrl,Category")] Product product)
         {
             if (id != product.ProductId)
             {

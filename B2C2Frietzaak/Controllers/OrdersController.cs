@@ -30,23 +30,32 @@ namespace B2C2Frietzaak.Controllers
         }
 
 
-
+        //Full Overview
         public IActionResult Orders()
         {
-            List<Product> products = _context.Products.ToList();
-
+            //Group the products in the view based on Category.
+            var products = _context.Products.ToList();
+            var groupedProducts = products.Where(p => !string.IsNullOrEmpty(p.Name))
+                .GroupBy(p => p.Category)
+                .Select(group => new GroupedProduct
+                {
+                    Category = group.Key,
+                    Products = group.ToList()
+                })
+                .ToList();
 
             var viewModel = new ProductsViewModel
             {
-                Products = products
+                Products = products,
+                GroupedProducts = groupedProducts
             };
 
             return View(viewModel);
         }
 
 
-
-        public IActionResult AddToCart(Product item)
+        //Add to cart method
+        public IActionResult AddToCart(Product product)
         {
             List<CartItem> cartItems;
 
@@ -61,21 +70,21 @@ namespace B2C2Frietzaak.Controllers
                 cartItems = new List<CartItem>();
             }
             //Check if item exists in Cart, add one if exists
-            var existingCartItem = cartItems.FirstOrDefault(ci => ci.ProductId == item.ProductId);
+            var existingCartItem = cartItems.FirstOrDefault(ci => ci.ProductId == product.ProductId);
 
             if (existingCartItem != null)
             {
                 existingCartItem.Quantity++;
-                existingCartItem.Price = existingCartItem.Quantity * item.Price;
+                existingCartItem.Price = existingCartItem.Quantity * product.Price;
             }
             else
             {
                 //else add items to Cart
                 cartItems.Add(new CartItem
                 {
-                    ProductId = item.ProductId,
-                    ProductName = item.Name,
-                    Price = item.Price,
+                    ProductId = product.ProductId,
+                    ProductName = product.Name,
+                    Price = product.Price,
                     Quantity = 1
                 });
             }
@@ -90,7 +99,7 @@ namespace B2C2Frietzaak.Controllers
             return RedirectToAction("Orders", cartItems);
         }
 
-
+        //button to give overview of full order
         public IActionResult OrderCheck()
         {
             List<CartItem> cartItems;
@@ -108,7 +117,7 @@ namespace B2C2Frietzaak.Controllers
 
             return View("OrderCheck", cartItems);
         }
-
+        //Finalize order and push order to DB
         public async Task<IActionResult> FinalizeOrder([Bind("OrderId,userId,OrderTime,Total,OrderItems")] Order Order)
         {
             var userId = _userManager.GetUserId(User);
@@ -128,6 +137,7 @@ namespace B2C2Frietzaak.Controllers
             float total = cartItems.Sum(item => (float)(item.Price));
             var orderItem = cartItems.Select(item => item.ProductName);
             string productNamesString = string.Join(", ", orderItem);
+            
 
             var order = new Order
             {
@@ -135,8 +145,6 @@ namespace B2C2Frietzaak.Controllers
                 OrderTime = OrderTime,
                 Total = total,
                 OrderItems = productNamesString,
-
-
             };
 
             _context.Orders.Add(order);
@@ -144,7 +152,7 @@ namespace B2C2Frietzaak.Controllers
 
             return View();
         }
-
+        //Delete method, reversed Add method :)
         public IActionResult DeleteFromOrder(int productId)
         {
 
@@ -174,6 +182,8 @@ namespace B2C2Frietzaak.Controllers
             // Redirect back to the cart page or another appropriate page
             return RedirectToAction("Orders");
         }
+
+        //Item Count method used to display the number behind the car in navbar
         public IActionResult GetCartItemCount()
         {
             List<CartItem> cartItems;

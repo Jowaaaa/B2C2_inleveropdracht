@@ -25,8 +25,12 @@
                     @Html.DisplayFor(model => model.Price)
                 </dd>
                 <dt class="col-sm-2 mt-5">
+                    @Html.DisplayNameFor(model => model.Category)
+                </dt>
+                <dt class="col-sm-2 mt-5">
                     @Html.DisplayNameFor(model => model.ImageUrl)
                 </dt>
+                
                 <dd class="col-sm-10 text-end">
                     <img src="@Model.ImageUrl" style="width: 100px; height: 100px" alt="@Model.Name" />
                 </dd>

@@ -5,8 +5,8 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
-    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"/>
-    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
 <body class="bg-dark text-white-50" style="padding-top: 100px">
     <div class="row mt-5 justify-content-center">
@@ -24,10 +24,16 @@
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <input asp-for="Category" class="form-control" />
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                <div class="form-group">
                     <label asp-for="ImageUrl" class="control-label"></label>
                     <input asp-for="ImageUrl" class="form-control" />
                     <span asp-validation-for="ImageUrl" class="text-danger"></span>
                 </div>
+
                 <div class="from-group float-start mt-2">
                     <button asp-action="ProductsOverview" class="btn btn-outline-secondary"><i class="bi bi-arrow-90deg-left"></i></button>
                 </div>
