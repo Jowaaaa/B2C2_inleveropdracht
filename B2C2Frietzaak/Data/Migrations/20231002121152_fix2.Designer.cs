@@ -4,6 +4,7 @@ using B2C2Frietzaak.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace B2C2Frietzaak.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231002121152_fix2")]
+    partial class fix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace B2C2Frietzaak.Data.Migrations
                     b.Property<int>("CartId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -89,9 +92,6 @@ namespace B2C2Frietzaak.Data.Migrations
                         .IsRequired()
                         .HasColumnType("datetime2");
 
-                    b.Property<float?>("Total")
-                        .HasColumnType("real");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -120,16 +120,11 @@ namespace B2C2Frietzaak.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SauceId")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderItemId");
 
                     b.HasIndex("OrderId");
 
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("SauceId");
 
                     b.ToTable("OrderItems");
                 });
@@ -142,13 +137,11 @@ namespace B2C2Frietzaak.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
 
-                    b.Property<int?>("CartItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
@@ -159,12 +152,10 @@ namespace B2C2Frietzaak.Data.Migrations
                         .IsRequired()
                         .HasColumnType("real");
 
-                    b.Property<int?>("SauceId")
+                    b.Property<int>("SauceId")
                         .HasColumnType("int");
 
                     b.HasKey("ProductId");
-
-                    b.HasIndex("CartItemId");
 
                     b.HasIndex("CategoryId");
 
@@ -401,7 +392,9 @@ namespace B2C2Frietzaak.Data.Migrations
 
                     b.HasOne("B2C2Frietzaak.Models.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Cart");
 
@@ -428,37 +421,27 @@ namespace B2C2Frietzaak.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("B2C2Frietzaak.Models.Product", "Product")
-                        .WithMany("OrderItems")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("B2C2Frietzaak.Models.Sauce", "Sauce")
-                        .WithMany()
-                        .HasForeignKey("SauceId");
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
-
-                    b.Navigation("Sauce");
                 });
 
             modelBuilder.Entity("B2C2Frietzaak.Models.Product", b =>
                 {
-                    b.HasOne("B2C2Frietzaak.Models.CartItem", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CartItemId");
-
                     b.HasOne("B2C2Frietzaak.Models.Category", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("B2C2Frietzaak.Models.Sauce", "Sauce")
                         .WithMany()
-                        .HasForeignKey("SauceId");
+                        .HasForeignKey("SauceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
 
@@ -521,22 +504,12 @@ namespace B2C2Frietzaak.Data.Migrations
                     b.Navigation("CartItems");
                 });
 
-            modelBuilder.Entity("B2C2Frietzaak.Models.CartItem", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("B2C2Frietzaak.Models.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("B2C2Frietzaak.Models.Order", b =>
-                {
-                    b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("B2C2Frietzaak.Models.Product", b =>
                 {
                     b.Navigation("OrderItems");
                 });

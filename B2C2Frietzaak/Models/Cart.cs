@@ -8,10 +8,7 @@ namespace B2C2Frietzaak.Models
     {
         [Key]
         public int CartId { get; set; }
-        [ForeignKey("UserId")]
-        public string? UserId { get; set; }
-        [ForeignKey("UserId")]
-        public IdentityUser? User { get; set; }
+        
         public List<CartItem>? CartItems { get; set; }
 
     }

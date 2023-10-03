@@ -9,8 +9,8 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? 
-            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        var connectionString = builder.Configuration.GetConnectionString("DevConnection") ?? 
+            throw new InvalidOperationException("Connection string 'DevConnection' not found.");
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(connectionString));

@@ -6,6 +6,8 @@
         public List<CartItem>? CartItems { get; set; }
         public List<Cart>? Carts { get; set; }
         public List<GroupedProduct>? GroupedProducts { get; set; }
+        public List<Sauce>? Sauces { get; set; }
+        public List<Order>? Orders { get; set;}
 
     }
 }

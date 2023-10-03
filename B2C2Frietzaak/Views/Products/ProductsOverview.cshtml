@@ -22,7 +22,7 @@
                         @Html.DisplayNameFor(model => model.Price)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Category)
+                        @Html.DisplayNameFor(model => model.Category.Name)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.ImageUrl)
@@ -43,10 +43,10 @@
                             @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Category)
+                            @Html.DisplayFor(modelItem => item.Category.Name)
                         </td>
                         <td>
-                            <img src="@item.ImageUrl" alt="@item.Name" style="height: 100px; width: 100px"/>
+                            <img src="/@item.ImageUrl" alt="@item.Name" style="height: 100px; width: 100px" /> 
                         </td>
                         <td>
                             <a class="btn btn-outline-primary" asp-action="EditProducts" asp-route-id="@item.ProductId">Edit</a>

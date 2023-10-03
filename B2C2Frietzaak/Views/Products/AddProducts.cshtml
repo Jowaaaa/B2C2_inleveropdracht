@@ -11,7 +11,7 @@
 <body class="bg-dark text-white-50" style="padding-top: 100px">
     <div class="row mt-5 justify-content-center">
         <div class="col-md-4">
-            <form asp-action="AddProducts">
+            <form asp-action="AddProducts" enctype="multipart/form-data"> @* https://stackoverflow.com/questions/4526273/what-does-enctype-multipart-form-data-mean *@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
                     <label asp-for="Name" class="control-label"></label>
@@ -24,16 +24,17 @@
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Category" class="control-label"></label>
-                    <input asp-for="Category" class="form-control" />
-                    <span asp-validation-for="Category" class="text-danger"></span>
+                    <label asp-for="CategoryId" class="control-label"></label>
+                    <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.Categories, "CategoryId", "Name"))" class="form-control">
+                        <option value="">Select a Category</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="ImageUrl" class="control-label"></label>
-                    <input asp-for="ImageUrl" class="form-control" />
-                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    <label asp-for="ImageFile" class="control-label"></label>
+                    <input type="file" asp-for="ImageFile" class="form-control"/>
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
-
                 <div class="from-group float-start mt-2">
                     <button asp-action="ProductsOverview" class="btn btn-outline-secondary"><i class="bi bi-arrow-90deg-left"></i></button>
                 </div>
