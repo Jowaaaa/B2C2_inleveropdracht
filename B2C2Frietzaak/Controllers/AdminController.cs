@@ -1,4 +1,5 @@
 ﻿using B2C2Frietzaak.Data;
+using B2C2Frietzaak.Data.Migrations;
 using B2C2Frietzaak.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +50,8 @@ namespace B2C2Frietzaak.Controllers
             {
                 return NotFound();
             }
+
+            var Sauces = _context.Sauces.ToDictionary(s => s.SauceId, s => s.SauceName); //map Sauces to dictionary https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.todictionary?view=net-7.0
 
             return View(userOrders);
         }

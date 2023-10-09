@@ -1,0 +1,33 @@
+﻿@model B2C2Frietzaak.Models.Sauce
+
+<html>
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+</head>
+<body class="bg-dark text-white-50" style="padding-top: 100px">
+    <div class="row mt-5 justify-content-center">
+        <div class="col-md-4 border rounded">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.SauceName)
+                </dt>
+                <dd class="col-sm-10 text-end">
+                    @Html.DisplayFor(model => model.SauceName)
+                </dd>
+                
+            </dl>
+            <form class="form-group d-flex m-2 justify-content-between" asp-action="DeleteSauce">
+                <button asp-action="SaucesOverview" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-90deg-left"></i>
+                </button>
+                <input type="hidden" asp-for="SauceId" />
+                <input type="submit" value="Verwijderen" class="btn btn-danger" />
+            </form>
+        </div>
+    </div>
+</body>
+</html>
