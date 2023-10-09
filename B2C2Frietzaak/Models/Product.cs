@@ -15,6 +15,9 @@ namespace B2C2Frietzaak.Models
         [DataType(DataType.Currency)]
         [Display(Name = "Prijs")]
         public float? Price { get; set; }
+        [Display(Name = "Korting")]
+        [DisplayFormat(DataFormatString = "{0:P}")]
+        public float? Discount { get; set; }
         [Display(Name = "Afbeelding")]
         public string? ImageUrl { get; set; }
 

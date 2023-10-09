@@ -36,18 +36,28 @@
                                                 <div class="card-img-top">
                                                     <img src="/@product.ImageUrl" width="100" height="100" alt="@product.Name" />
                                                     <div class="card-footer">
-                                                        <label asp-for="@product.Price">€@product.Price</label>
+                                                        @if (product.Discount != null)
+                                                        {
+                                                            var discountedPrice = product.Price - (product.Price * (product.Discount));
+                                                            <label class="text-danger" asp-for="@product.Discount">Korting Prijs: €@discountedPrice</label>
+                                                            <input type="hidden" name="Price" value="@discountedPrice" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <label asp-for="@product.Price">Prijs: €@product.Price</label>
+                                                            <input type="hidden" name="Price" value="@product.Price" />
+                                                        }
+
                                                         <input type="text" asp-for="@product.Price" hidden />
                                                         <input type="hidden" name="Name" value="@product.Name" />
-                                                        <input type="hidden" name="ProductId" value="@product.ProductId" />
-                                                        <input type="hidden" name="Price" value="@product.Price" />
+                                                        <input type="hidden" name="ProductId" value="@product.ProductId" />                       
                                                         <input type="hidden" name="Quantity" value="1" min="1" />
                                                         <div class="d-flex justify-content-between">
                                                             <select class="form-control bg-dark border border-dark text-white-50" id="sauceSelect" name="SauceId" style="width: 150px">
                                                                 <option class="bi bi-chevron-down" value="">Geen Saus</option>
                                                                 @foreach (var sauce in Model.Sauces)
                                                                 {
-                                                                    <option value="@sauce.Id">@sauce.SauceName</option>
+                                                                    <option value="@sauce.SauceId">@sauce.SauceName</option>
                                                                 }
                                                             </select>
                                                             <input type="hidden" name="SauceName" value="@product.SauceId" />
@@ -78,7 +88,7 @@
                 </div>
                 <div class="card-body">
                     @{
-                        // Deserialize the Session Storage and map items for layout
+                        //Deserialize the Session Storage and map items for layout
                         var cartItemsBytes = HttpContextAccessor.HttpContext.Session.Get("CartItems");
                         List<CartItem> cartItems = null;
 

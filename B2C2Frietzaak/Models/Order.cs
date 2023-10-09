@@ -14,6 +14,7 @@ namespace B2C2Frietzaak.Models
         public IdentityUser? User { get; set; }
         [Required]
         public DateTime? OrderTime { get; set; } = DateTime.Now;
+        [DataType(DataType.Currency)]
         public float? Total { get; set; }
 
         public List<OrderItem>? OrderItems { get; set; }

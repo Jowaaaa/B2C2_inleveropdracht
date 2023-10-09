@@ -83,11 +83,12 @@ namespace B2C2Frietzaak.Controllers
             {
                 //Get saucename by Id
                 var sauceName = _context.Sauces
-                            .Where(s => s.Id == SauceId)
+                            .Where(s => s.SauceId == SauceId)
                             .Select(s => s.SauceName)
                             .FirstOrDefault();
 
-
+                
+                
                 cartItems.Add(new CartItem
                 {
                     CartItemId = ProductId,
@@ -145,25 +146,24 @@ namespace B2C2Frietzaak.Controllers
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
-                // Deserialize objects if items in Cart
+                //Deserialize objects if items in Cart
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
             }
             else
             {
-                // Initialize new CartItem List
+                //Initialize new CartItem List
                 cartItems = new List<CartItem>();
             }
 
-            // Order Table
+            //Order Table
             var order = new Order
             {
                 UserId = userId,
                 OrderTime = DateTime.Now,
                 Total = cartItems.Sum(item => item.Product.Price * item.Quantity),
-                OrderItems = new List<OrderItem>() // Initialize the OrderItems collection
+                OrderItems = new List<OrderItem>() //Initialize OrderItems collection
             };
 
-            // Loop for all products in the order
             foreach (var cartItem in cartItems)
             {
                 
@@ -171,19 +171,15 @@ namespace B2C2Frietzaak.Controllers
                 {
                     Quantity = cartItem.Quantity,
                     ProductId = cartItem.Product.ProductId,
-                    // Set the SauceId for the OrderItem
+                    //Set the SauceId for the OrderItem
                     SauceId = cartItem.Product.SauceId
                 };
 
                 order.OrderItems.Add(orderItem);
             }
 
-            _context.Orders.Add(order);
-
-            // Save
+            _context.Orders.Add(order);      
             await _context.SaveChangesAsync();
-
-            // Remove everything from session
             HttpContext.Session.Remove("CartItems");
 
             return View();
@@ -229,12 +225,11 @@ namespace B2C2Frietzaak.Controllers
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
-                // Deserialize objects if items are in the cart
+                //Deserialize objects if items in the cart
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
             }
             else
             {
-                // Initialize a new CartItem List
                 cartItems = new List<CartItem>();
             }
 

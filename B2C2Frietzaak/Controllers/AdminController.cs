@@ -44,6 +44,7 @@ namespace B2C2Frietzaak.Controllers
                 .ThenInclude(s => s.Sauce)
                 .ToListAsync();
 
+
             if (userOrders == null)
             {
                 return NotFound();

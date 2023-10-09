@@ -53,7 +53,6 @@ namespace B2C2Frietzaak.Controllers
                 }
 
                 product.ImageUrl = "Assets/" + uniqueFileName;
-                Console.WriteLine("ImageUrl: " + product.ImageUrl);
 
 
                 if (ModelState.IsValid) //Gave errors because of "Required" annotation in model
