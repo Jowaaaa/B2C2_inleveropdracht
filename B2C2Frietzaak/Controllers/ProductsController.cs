@@ -118,6 +118,7 @@ namespace B2C2Frietzaak.Controllers
                 }
                 return RedirectToAction("ProductsOverview");
             }
+
             return View(product);
         }
 

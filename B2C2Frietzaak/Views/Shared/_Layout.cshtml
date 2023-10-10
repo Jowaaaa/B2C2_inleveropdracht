@@ -44,6 +44,9 @@
                                 <li class="nav-item mx-1">
                                     <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Admin" asp-action="ListUsers">Beheer Klanten</a>
                                 </li>
+                                <li class="nav-item mx-1">
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Orders" asp-action="AllOrders">Beheer Bestellingen</a>
+                                </li>
                             }
                             else
                             {
@@ -52,6 +55,9 @@
                                 </li>
                                 <li class="nav-item mx-1">
                                     <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
+                                </li>
+                                <li class="nav-item mx-1">
+                                    <a class="btn btn-outline-light nav-link text-white" asp-area="" asp-controller="Orders" asp-action="MyOrders">Mijn Bestellingen</a>
                                 </li>
 
                             }}
@@ -68,9 +74,13 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2023 - B2C2Frietzaak - Job van der Wal
+    <footer class="border-top bg-dark text-white opacity-75 bottom-0 position-absolute" style="height: 50px; width: 100%">
+        <div class="d-flex justify-content-center">
+            <p class="mx-1">
+                &copy; 2023 - Job van der Wal - B2C2
+            </p>
+            <a href="https://github.com/Jowaaaa/B2C2_inleveropdracht" class="text-white bi bi-github"></a>
+            
         </div>
     </footer>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
