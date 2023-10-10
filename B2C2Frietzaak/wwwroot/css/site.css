@@ -18,5 +18,26 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    padding-top: 100px;
+}
+
+.bestelBtn {
+    position: absolute;
+    top: 80%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.homeBackground {
+    background-image: url('https://cdn.discordapp.com/attachments/959570592028323882/1161239849689419838/Burgerv1.png?ex=653793e2&is=65251ee2&hm=f1e7076d90c07352703a8fbec478630687ecab7239f5955ceea46227ec8043b8&');
+    background-color: darkgrey;
+    background-size: cover;
+}
+
+.productCard{
+    width: 350px;
+}
+
+.sauceSelect {
+    width: 150px;
 }
