@@ -31,6 +31,7 @@ namespace B2C2Frietzaak.Controllers
 
 
         //Full Overview
+        [Route("/bestellen")]
         public IActionResult Orders()
         {
             //Group by Category
@@ -119,6 +120,7 @@ namespace B2C2Frietzaak.Controllers
 
 
         //button to give overview of full order
+        [Route("/bestellingcheck")]
         public IActionResult OrderCheck()
         {
             List<CartItem> cartItems;
@@ -138,6 +140,7 @@ namespace B2C2Frietzaak.Controllers
         }
 
         //Finalize order and push order to DB
+        [Route("/bestellingsucces")]
         public async Task<IActionResult> FinalizeOrder()
         {
             var userId = _userManager.GetUserId(User);
