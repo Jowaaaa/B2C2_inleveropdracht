@@ -15,38 +15,36 @@
             <div class="card-body">
                 @{
                     var totalQuantity = Model.Sum(item => item.Quantity);
-                    var totalPrice = Model.Sum(item => item.Price);
+                    var totalPrice = Model.Sum(item => item.Product.Price * item.Quantity);
                 }
                 <table class="table text-white">
                     <thead>
                         <tr>
                             <th scope="col">Product</th>
-                            <th scope="col">Prijs</th>
+                            <th scope="col">Saus</th>
+                            <th scope="col">Prijs per Product</th>
                             <th scope="col">Aantal</th>
+                            <th scope="col">Totaal Prijs</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.ProductName </td>
-                                <td>€@item.Price </td>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Product.Sauce.SauceName</td>
+                                <td>€@item.Product.Price</td>
                                 <td>@item.Quantity Stuk(s)</td>
+                                <td>€@(item.Product.Price * item.Quantity)</td>
                             </tr>
-                            
-                        }                  
+                        }
                     </tbody>
                 </table>
-                <p class="text-end fw-bold">Totaal: €@totalPrice</p>               
+                <p class="text-end fw-bold">Totaal: €@totalPrice</p>
             </div>
             <a class="btn btn-success" asp-controller="Orders" asp-action="FinalizeOrder">Bestelling Bevestigen</a>
         </div>
-
     </div>
-
-
-
-
-
 </body>
 </html>
+

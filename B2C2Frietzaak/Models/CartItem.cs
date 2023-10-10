@@ -7,23 +7,14 @@ namespace B2C2Frietzaak.Models
     {
         [Key]
         public int CartItemId { get; set; }
-        [ForeignKey("Product")]
-        public int ProductId { get; set; }
-        public string? ProductName { get; set; }
-        public float? Price { get; set; }
-        public string? ImageUrl { get; set; }
+        
         public int Quantity { get; set; }
-        public float? Total
-        {
-            get { return Quantity * Price; }
-        }
 
+        public List<Product>? Products { get; set; }
 
         // Navigatie Properties
-        public Cart? Cart { get; set; }
         public Product? Product { get; set; }
-
-
-
+        public int CartId { get; set; }
+        public Cart? Cart { get; set; }
     }
 }

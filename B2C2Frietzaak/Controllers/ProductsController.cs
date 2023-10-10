@@ -12,10 +12,12 @@ namespace B2C2Frietzaak.Controllers
     {
         //Dependancy Injection
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
         public Product? Product { get; set; }
 
@@ -24,23 +26,49 @@ namespace B2C2Frietzaak.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ProductsOverview()
         {
-            return _context.Products != null ?
-                View(await _context.Products.ToListAsync()) :
-                Problem("Entity set 'AppDbContext.Products = null");
+
+            var products = await _context.Products.Include(p => p.Category).ToListAsync();
+            return View(products);
         }
 
 
         //Products Add
-        public async Task<IActionResult> AddProducts([Bind("ProductId,Name,Price,ImageUrl,Category")] Product product)
+        public async Task<IActionResult> AddProducts(Product product, IFormFile ImageFile)
         {
-            if (ModelState.IsValid)
+            // Handle file upload first
+            if (ImageFile != null && ImageFile.Length > 0)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("ProductsOverview");
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                var assetDirectory = Path.Combine(_environment.WebRootPath, "Assets");
+                var filePath = Path.Combine(assetDirectory, uniqueFileName);
+
+                if (!Directory.Exists(assetDirectory))
+                {
+                    Directory.CreateDirectory(assetDirectory);
+                }
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(fileStream);
+                }
+
+                product.ImageUrl = "Assets/" + uniqueFileName;
+
+
+                if (ModelState.IsValid) //Gave errors because of "Required" annotation in model
+                {
+                    _context.Add(product);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("ProductsOverview");
+                }
             }
+         
+            ViewBag.Categories = await _context.Categories.ToListAsync();
+
             return View(product);
         }
+
+
 
         //Products Edit
         public async Task<IActionResult> EditProducts(int? id)
@@ -55,13 +83,15 @@ namespace B2C2Frietzaak.Controllers
             {
                 return NotFound();
             }
+
+            ViewBag.Categories = await _context.Categories.ToListAsync();
             return View(product);
         }
 
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProducts(int id, [Bind("ProductId,Name,Price,ImageUrl,Category")] Product product)
+        public async Task<IActionResult> EditProducts(int id, Product product)
         {
             if (id != product.ProductId)
             {

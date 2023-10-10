@@ -33,9 +33,9 @@ namespace B2C2Frietzaak.Controllers
         //Full Overview
         public IActionResult Orders()
         {
-            //Group the products in the view based on Category.
-            var products = _context.Products.ToList();
-            var groupedProducts = products.Where(p => !string.IsNullOrEmpty(p.Name))
+            //Group by Category
+            var groupedProducts = _context.Products
+                .Where(p => !string.IsNullOrEmpty(p.Name))
                 .GroupBy(p => p.Category)
                 .Select(group => new GroupedProduct
                 {
@@ -46,8 +46,8 @@ namespace B2C2Frietzaak.Controllers
 
             var viewModel = new ProductsViewModel
             {
-                Products = products,
-                GroupedProducts = groupedProducts
+                GroupedProducts = groupedProducts,
+                Sauces = _context.Sauces.ToList()
             };
 
             return View(viewModel);
@@ -55,49 +55,68 @@ namespace B2C2Frietzaak.Controllers
 
 
         //Add to cart method
-        public IActionResult AddToCart(Product product)
+        public IActionResult AddToCart(int ProductId, float Price, int Quantity, string Name, int SauceId)
         {
+
             List<CartItem> cartItems;
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
-                //deserialize objects if items in Cart
+                //Deserialize objects if items in cart
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
             }
             else
             {
-                //initiaze new CartItem List
+                //Initialize CartItem List
                 cartItems = new List<CartItem>();
             }
-            //Check if item exists in Cart, add one if exists
-            var existingCartItem = cartItems.FirstOrDefault(ci => ci.ProductId == product.ProductId);
+
+            //extra check to make new line in Cart if the sauce don't match
+            var existingCartItem = cartItems.FirstOrDefault(ci => ci.CartItemId == ProductId && ci.Product.SauceId == SauceId);
 
             if (existingCartItem != null)
             {
-                existingCartItem.Quantity++;
-                existingCartItem.Price = existingCartItem.Quantity * product.Price;
+                existingCartItem.Quantity += Quantity;
+                existingCartItem.Product.Price = existingCartItem.Quantity * Price;
             }
             else
             {
-                //else add items to Cart
+                //Get saucename by Id
+                var sauceName = _context.Sauces
+                            .Where(s => s.SauceId == SauceId)
+                            .Select(s => s.SauceName)
+                            .FirstOrDefault();
+
+                
+                
                 cartItems.Add(new CartItem
                 {
-                    ProductId = product.ProductId,
-                    ProductName = product.Name,
-                    Price = product.Price,
-                    Quantity = 1
+                    CartItemId = ProductId,
+                    Quantity = Quantity,
+                    Product = new Product
+                    {
+                        Name = Name,
+                        ProductId = ProductId,
+                        Price = Price,
+                        SauceId = SauceId,
+                        Sauce = new Sauce { SauceName = sauceName }
+
+                    }
                 });
             }
-            //Serialize Objects
+
+            //Serialize to set in session
             HttpContext.Session.Set("CartItems", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cartItems)));
 
             int cartItemCount = cartItems.Sum(ci => ci.Quantity);
-
 
             ViewData["CartItemCount"] = cartItemCount;
 
             return RedirectToAction("Orders", cartItems);
         }
+
+
+
 
         //button to give overview of full order
         public IActionResult OrderCheck()
@@ -117,41 +136,57 @@ namespace B2C2Frietzaak.Controllers
 
             return View("OrderCheck", cartItems);
         }
+
         //Finalize order and push order to DB
-        public async Task<IActionResult> FinalizeOrder([Bind("OrderId,userId,OrderTime,Total,OrderItems")] Order Order)
+        public async Task<IActionResult> FinalizeOrder()
         {
             var userId = _userManager.GetUserId(User);
-            var OrderTime = DateTime.Now;
-            List<CartItem> cartItems;
 
+            List<CartItem> cartItems;
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
-                //deserialize objects if items in Cart
+                //Deserialize objects if items in Cart
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
             }
             else
             {
-                return Content("No Cart Available");
+                //Initialize new CartItem List
+                cartItems = new List<CartItem>();
             }
-            float total = cartItems.Sum(item => (float)(item.Price));
-            var orderItem = cartItems.Select(item => item.ProductName);
-            string productNamesString = string.Join(", ", orderItem);
-            
 
+            //Order Table
             var order = new Order
             {
                 UserId = userId,
-                OrderTime = OrderTime,
-                Total = total,
-                OrderItems = productNamesString,
+                OrderTime = DateTime.Now,
+                Total = cartItems.Sum(item => item.Product.Price * item.Quantity),
+                OrderItems = new List<OrderItem>() //Initialize OrderItems collection
             };
 
-            _context.Orders.Add(order);
+            foreach (var cartItem in cartItems)
+            {
+                
+                var orderItem = new OrderItem
+                {
+                    Quantity = cartItem.Quantity,
+                    ProductId = cartItem.Product.ProductId,
+                    //Set the SauceId for the OrderItem
+                    SauceId = cartItem.Product.SauceId
+                };
+
+                order.OrderItems.Add(orderItem);
+            }
+
+            _context.Orders.Add(order);      
             await _context.SaveChangesAsync();
+            HttpContext.Session.Remove("CartItems");
 
             return View();
         }
+
+
+
         //Delete method, reversed Add method :)
         public IActionResult DeleteFromOrder(int productId)
         {
@@ -167,21 +202,21 @@ namespace B2C2Frietzaak.Controllers
                 cartItems = new List<CartItem>();
             }
 
-            // Find the item to remove by ProductId
-            var itemToRemove = cartItems.FirstOrDefault(ci => ci.ProductId == productId);
+            //Find item by linking product id to the id in the cart -> changed from previous version
+            var itemToRemove = cartItems.FirstOrDefault(ci => ci.CartItemId == productId);
 
             if (itemToRemove != null)
             {
-                // Remove the item from the cart
+
                 cartItems.Remove(itemToRemove);
 
-                // Update the session with the modified cart
+                //Update storage after removal
                 HttpContext.Session.Set("CartItems", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cartItems)));
             }
 
-            // Redirect back to the cart page or another appropriate page
             return RedirectToAction("Orders");
         }
+
 
         //Item Count method used to display the number behind the car in navbar
         public IActionResult GetCartItemCount()
@@ -190,12 +225,11 @@ namespace B2C2Frietzaak.Controllers
 
             if (HttpContext.Session.TryGetValue("CartItems", out byte[] cartItemsData))
             {
-                // Deserialize objects if items are in the cart
+                //Deserialize objects if items in the cart
                 cartItems = JsonConvert.DeserializeObject<List<CartItem>>(Encoding.UTF8.GetString(cartItemsData));
             }
             else
             {
-                // Initialize a new CartItem List
                 cartItems = new List<CartItem>();
             }
 

@@ -5,24 +5,24 @@
 namespace B2C2Frietzaak.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class ProductsToOrder : Migration
+    public partial class sauceId : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "OrderItems",
-                table: "Orders",
-                type: "nvarchar(max)",
-                nullable: true);
+            migrationBuilder.RenameColumn(
+                name: "Id",
+                table: "Sauces",
+                newName: "SauceId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "OrderItems",
-                table: "Orders");
+            migrationBuilder.RenameColumn(
+                name: "SauceId",
+                table: "Sauces",
+                newName: "Id");
         }
     }
 }

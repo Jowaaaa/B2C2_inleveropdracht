@@ -10,38 +10,51 @@
 </head>
 <body class="bg-dark text-white-50" style="padding-top: 100px">
     <div>
-        <h1>User informatie</h1>
+        <h1>User Details</h1>
 
         @if (Model.Count == 0)
         {
-            <p>Nog geen orders geplaatst.</p>
+            <p>No orders for this user.</p>
         }
         else
         {
-            <table class="table table-dark text-white">
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Totaal</th>
-                        <th>Tijd</th>
-                        <th>Items in bestelling</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var order in Model)
-                    {
+            @foreach (var order in Model)
+            {
+                <table class="table table-dark text-white">
+                    <thead>
                         <tr>
-                            <td>@order.OrderId</td>
-                            <td>@order.Total</td>
-                            <td>@order.OrderTime</td>
-                            <td>@order.OrderItems</td>
+                            <th>Order ID</th>
+                            <th>Order Time</th>
+                            <th>Product</th>
+                            <th>Saus</th>
+                            <th>Quantity</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @* keep first 2 columns blank if multiple Products in Order *@
+                        @foreach (var orderItem in order.OrderItems)
+                        {
+                            <tr>
+                                @if (order.OrderItems.First() == orderItem)
+                                {
+                                    <td>@order.OrderId</td>
+                                    <td>@order.OrderTime</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                    <td></td>
+                                }
+                                <td>@orderItem.Product.Name</td>                              
+                                <td>@orderItem.Sauce?.SauceName</td>
+                                <td>@orderItem.Quantity</td>
+                            </tr>
+                        }                        
+                    </tbody>
+                </table>
+                <p class="text-white float-end">Totaalbedrag: €@order.Total</p>
+            }
         }
-
-
     </div>
 </body>
 </html>

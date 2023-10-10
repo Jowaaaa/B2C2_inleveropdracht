@@ -12,32 +12,56 @@
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
-<body class="bg-dark text-white-50" style="padding-top: 100px">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="row">
-                    @foreach (var group in Model.GroupedProducts)
+<body class="bg-dark w-full text-white-50" style="padding-top: 100px">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                @foreach (var group in Model.GroupedProducts)
+                {
+                    @if (group.Category != null)
                     {
-                        <h2 class="mt-5 text-white">@group.Category</h2>
-                        <div class="row">
-                            @foreach (var product in group.Products)
-                            {
+                        <h2 class="mt-5 text-white">@group.Category.Name</h2>
+                    }
+                    <div class="row">
+                        @foreach (var product in group.Products)
+                        {
+                            <div class="col-md-6">
                                 <div class="col-md-6">
-                                    <div class="col-md-6">
-                                        <form asp-action="AddToCart" method="post">
-                                            <div class="card bg-dark text-white-50 mt-3" style="width: 350px">
-                                                <div class="card-header text-center">
-                                                    <h3>@product.Name</h3>
-                                                    <label asp-for="@product.Name" hidden></label>
-                                                    <input type="text" asp-for="@product.Name" hidden />
-                                                    <label asp-for="@product.ProductId" hidden></label>
-                                                    <input type="text" asp-for="@product.ProductId" hidden />
-                                                    <div class="card-img-top">
-                                                        <img src="@product.ImageUrl" width="100" height="100" alt="@product.Name" />
-                                                        <div class="card-footer">
-                                                            <label asp-for="@product.Price">€@product.Price</label>
-                                                            <input type="text" asp-for="@product.Price" hidden />
+                                    <form asp-action="AddToCart" method="post">
+                                        <div class="card bg-dark text-white-50 mt-3" style="width: 350px">
+                                            <div class="card-header text-center">
+                                                <h3>@product.Name</h3>
+                                                <label asp-for="@product.Name" hidden></label>
+                                                <label asp-for="@product.ProductId" hidden></label>
+                                                <div class="card-img-top">
+                                                    <img src="/@product.ImageUrl" width="100" height="100" alt="@product.Name" />
+                                                    <div class="card-footer">
+                                                        @if (product.Discount != null)
+                                                        {
+                                                            var discountedPrice = product.Price - (product.Price * (product.Discount));
+                                                            <label class="text-danger" asp-for="@product.Discount">Korting Prijs: €@discountedPrice</label>
+                                                            <input type="hidden" name="Price" value="@discountedPrice" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <label asp-for="@product.Price">Prijs: €@product.Price</label>
+                                                            <input type="hidden" name="Price" value="@product.Price" />
+                                                        }
+
+                                                        <input type="text" asp-for="@product.Price" hidden />
+                                                        <input type="hidden" name="Name" value="@product.Name" />
+                                                        <input type="hidden" name="ProductId" value="@product.ProductId" />                       
+                                                        <input type="hidden" name="Quantity" value="1" min="1" />
+                                                        <div class="d-flex justify-content-between">
+                                                            <select class="form-control bg-dark border border-dark text-white-50" id="sauceSelect" name="SauceId" style="width: 150px">
+                                                                <option class="bi bi-chevron-down" value="">Geen Saus</option>
+                                                                @foreach (var sauce in Model.Sauces)
+                                                                {
+                                                                    <option value="@sauce.SauceId">@sauce.SauceName</option>
+                                                                }
+                                                            </select>
+                                                            <input type="hidden" name="SauceName" value="@product.SauceId" />
+
                                                             <button type="submit" class="float-end btn btn-outline-success bi bi-cart"
                                                                     data-bs-toggle="modal" data-bs-target="#sauceModal">
                                                                 Toevoegen
@@ -46,76 +70,76 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </form>
-                                    </div>
-                                   
+                                        </div>
+                                    </form>
+
                                 </div>
-                            }
-                        </div>
-                    }                  
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card bg-dark text-white-50 mt-3" style="width: 350px">
-                    <div class="card-header">
-                        <h3 class="text-center">Cart</h3>
-                    </div>
-                    <div class="card-body">
-                        @{
-                            // Deserialize the Session Storage and map items for layout
-                            var cartItemsBytes = HttpContextAccessor.HttpContext.Session.Get("CartItems");
-                            List<CartItem> cartItems = null;
 
-                            if (cartItemsBytes != null)
-                            {
-                                var cartItemsJson = Encoding.UTF8.GetString(cartItemsBytes);
-                                cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartItemsJson);
-                            }
+                            </div>
                         }
-                        <table class="table table-dark text-white-50">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Prijs</th>
-                                    <th>Aantal</th>
-                                    <th>Saus</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark text-white-50 mt-5" style="width: 500px">
+                <div class="card-header">
+                    <h3 class="text-center">Cart</h3>
+                </div>
+                <div class="card-body">
+                    @{
+                        //Deserialize the Session Storage and map items for layout
+                        var cartItemsBytes = HttpContextAccessor.HttpContext.Session.Get("CartItems");
+                        List<CartItem> cartItems = null;
 
-                                @if (cartItems != null && cartItems.Any())
+                        if (cartItemsBytes != null)
+                        {
+                            var cartItemsJson = Encoding.UTF8.GetString(cartItemsBytes);
+                            cartItems = JsonConvert.DeserializeObject<List<CartItem>>(cartItemsJson);
+                        }
+                    }
+                    <table class="table table-dark text-white-50">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Aantal</th>
+                                <th>Prijs</th>
+                                <th>Saus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (cartItems != null && cartItems.Any())
+                            {
+                                @foreach (var item in cartItems)
                                 {
-                                    @foreach (var item in cartItems)
-                                    {
-                                        <tr>
-                                            <td>@item.ProductName</td>
-                                            <td>€@item.Price</td>
-                                            <td>@item.Quantity</td>
-                                            <td>saus</td>
-                                            <td>
-                                                <form asp-action="DeleteFromOrder" method="post">
-                                                    <input type="hidden" name="productId" value="@item.ProductId" />
-                                                    <button type="submit" class="btn btn-danger btn-sm bi bi-x"></button>
-                                                </form>
-                                            </td>
-                                        </tr>
-
-                                    }
+                                    <tr>
+                                        <td>@item.Product.Name</td>
+                                        <td>@item.Quantity</td>
+                                        <td>€@item.Product.Price</td>
+                                        <td>@item.Product.Sauce?.SauceName</td>@*  ? for when Sauce = null *@
+                                        <td>
+                                            <form asp-action="DeleteFromOrder" method="post">
+                                                <input type="hidden" name="productId" value="@item.CartItemId" />
+                                                <button type="submit" class="btn btn-danger btn-sm bi bi-x"></button>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 }
-                                else
-                                {
-                                    <p class="fst-italic">Nog geen items in Cart</p>
-                                }
-                            </tbody>
-                        </table>
-                        <p>@ViewData["CartItemCount"]</p>
+                            }
+                            else
+                            {
+                                <p class="fst-italic">Nog geen items in Cart</p>
+                            }
+                        </tbody>
+
+                    </table>
+                    <p>@ViewData["CartItemCount"]</p>
 
 
-                        <div class="card-footer text-end">
-                            <form asp-action="OrderCheck" method="post">
-                                <button type="submit" class="btn btn-outline-success bi bi-wallet2"> Bestellen</button>
-                            </form>
-                        </div>
+                    <div class="card-footer text-end">
+                        <form asp-action="OrderCheck" method="post">
+                            <button type="submit" class="btn btn-outline-success bi bi-wallet2"> Bestellen</button>
+                        </form>
                     </div>
                 </div>
             </div>

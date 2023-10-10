@@ -1,4 +1,6 @@
 ﻿using B2C2Frietzaak.Data;
+using B2C2Frietzaak.Data.Migrations;
+using B2C2Frietzaak.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,12 +32,26 @@ namespace B2C2Frietzaak.Controllers
 
         public async Task<IActionResult> UserDetails(string? id)
         {
-            //string userId = userManager.GetUserId(User);
 
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var userOrders = _context.Orders
+            var userOrders = await _context.Orders
                 .Where(o => o.UserId == id)
-                .ToList();
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(s => s.Sauce)
+                .ToListAsync();
+
+
+            if (userOrders == null)
+            {
+                return NotFound();
+            }
+
+            var Sauces = _context.Sauces.ToDictionary(s => s.SauceId, s => s.SauceName); //map Sauces to dictionary https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.todictionary?view=net-7.0
 
             return View(userOrders);
         }

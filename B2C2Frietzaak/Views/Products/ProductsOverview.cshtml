@@ -9,8 +9,7 @@
 <body class="bg-dark text-white-50" style="padding-top: 100px">
     <div>
         <div class="d-flex justify-content-between">
-            <h1>Alle Producten</h1>
-            <a class="btn btn-outline-primary bi bi-arrow-right" asp-controller="Sauces" asp-action="SaucesOverview"> Naar sauzen</a>
+            <h1>Alle Producten</h1>            
         </div>
         <table class="table table-dark text-white-50">
             <thead>
@@ -22,10 +21,13 @@
                         @Html.DisplayNameFor(model => model.Price)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Category)
+                        @Html.DisplayNameFor(model => model.Category.Name)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.ImageUrl)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Discount)
                     </th>
                     <th>
                         Manage
@@ -43,10 +45,13 @@
                             @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Category)
+                            @Html.DisplayFor(modelItem => item.Category.Name)
                         </td>
                         <td>
-                            <img src="@item.ImageUrl" alt="@item.Name" style="height: 100px; width: 100px"/>
+                            <img src="/@item.ImageUrl" alt="@item.Name" style="height: 100px; width: 100px" /> 
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Discount)
                         </td>
                         <td>
                             <a class="btn btn-outline-primary" asp-action="EditProducts" asp-route-id="@item.ProductId">Edit</a>
@@ -59,7 +64,8 @@
         </table>
     </div>
     <div class="d-flex">
-    <a class="btn btn-outline-success flex-column ms-auto" asp-action="AddProducts" >Product Toevoegen</a>
+        <a class="btn btn-outline-success flex-column ms-auto" asp-action="AddProducts">Product Toevoegen</a>
+        <a class="ms-2 btn btn-outline-primary bi bi-arrow-right" asp-controller="Sauces" asp-action="SaucesOverview"> Naar sauzen</a>
     </div>
     
 </body>
