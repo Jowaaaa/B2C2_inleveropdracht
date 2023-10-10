@@ -39,12 +39,14 @@
                                                         @if (product.Discount != null)
                                                         {
                                                             var discountedPrice = product.Price - (product.Price * (product.Discount));
-                                                            <label class="text-danger" asp-for="@product.Discount">Korting Prijs: €@discountedPrice</label>
+                                                            <label class="text-danger" asp-for="@product.Discount">Korting Prijs: @String.Format("{0:C2}", discountedPrice)</label>
                                                             <input type="hidden" name="Price" value="@discountedPrice" />
                                                         }
                                                         else
                                                         {
-                                                            <label asp-for="@product.Price">Prijs: €@product.Price</label>
+                                                            <label asp-for="@product.Price">
+                                                                Prijs: @String.Format("{0:C2}", product.Price)
+                                                            </label>
                                                             <input type="hidden" name="Price" value="@product.Price" />
                                                         }
 
@@ -115,7 +117,7 @@
                                     <tr>
                                         <td>@item.Product.Name</td>
                                         <td>@item.Quantity</td>
-                                        <td>€@item.Product.Price</td>
+                                        <td>@String.Format("{0:C2}", @item.Product.Price) </td>
                                         <td>@item.Product.Sauce?.SauceName</td>@*  ? for when Sauce = null *@
                                         <td>
                                             <form asp-action="DeleteFromOrder" method="post">

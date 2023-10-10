@@ -12,11 +12,11 @@ namespace B2C2Frietzaak.Models
         [Display(Name ="Naam")]
         public string? Name { get; set; }
         [Required]
-        [DataType(DataType.Currency)]
+        [DataType(DataType.Currency)] //Only works for @Html.DisplayFor
         [Display(Name = "Prijs")]
         public float? Price { get; set; }
         [Display(Name = "Korting")]
-        [DisplayFormat(DataFormatString = "{0:P}")]
+        [DisplayFormat(DataFormatString = "{0:P0}")]
         public float? Discount { get; set; }
         [Display(Name = "Afbeelding")]
         public string? ImageUrl { get; set; }

@@ -15,7 +15,11 @@ namespace B2C2Frietzaak.Models
         [Required]
         public DateTime? OrderTime { get; set; } = DateTime.Now;
         [DataType(DataType.Currency)]
+        [DisplayFormat(DataFormatString = "{0:C0}")]
         public float? Total { get; set; }
+        [ForeignKey("StatusId")]
+        public int? StatusId { get; set; }
+        public Status? Status { get; set; }
 
         public List<OrderItem>? OrderItems { get; set; }
 

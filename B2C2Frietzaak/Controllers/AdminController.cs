@@ -40,6 +40,7 @@ namespace B2C2Frietzaak.Controllers
 
             var userOrders = await _context.Orders
                 .Where(o => o.UserId == id)
+                .Include(st => st.Status)
                 .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
                 .ThenInclude(s => s.Sauce)
@@ -51,6 +52,7 @@ namespace B2C2Frietzaak.Controllers
                 return NotFound();
             }
 
+            var Status = _context.Status.ToDictionary(s => s.StatusId, s => s.StatusName);
             var Sauces = _context.Sauces.ToDictionary(s => s.SauceId, s => s.SauceName); //map Sauces to dictionary https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.todictionary?view=net-7.0
 
             return View(userOrders);

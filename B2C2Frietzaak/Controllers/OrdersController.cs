@@ -87,8 +87,8 @@ namespace B2C2Frietzaak.Controllers
                             .Select(s => s.SauceName)
                             .FirstOrDefault();
 
-                
-                
+
+
                 cartItems.Add(new CartItem
                 {
                     CartItemId = ProductId,
@@ -166,7 +166,7 @@ namespace B2C2Frietzaak.Controllers
 
             foreach (var cartItem in cartItems)
             {
-                
+
                 var orderItem = new OrderItem
                 {
                     Quantity = cartItem.Quantity,
@@ -178,7 +178,7 @@ namespace B2C2Frietzaak.Controllers
                 order.OrderItems.Add(orderItem);
             }
 
-            _context.Orders.Add(order);      
+            _context.Orders.Add(order);
             await _context.SaveChangesAsync();
             HttpContext.Session.Remove("CartItems");
 
@@ -236,6 +236,95 @@ namespace B2C2Frietzaak.Controllers
             int cartItemCount = cartItems.Sum(ci => ci.Quantity);
 
             return Json(cartItemCount);
+        }
+        [Authorize(Roles = "Admin")]
+        //All Orders
+        public async Task<IActionResult> AllOrders()
+        {
+
+            var userOrders = await _context.Orders
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(s => s.Sauce)
+                .Include(st => st.Status)
+                .ToListAsync();
+
+
+            if (userOrders == null)
+            {
+                return NotFound();
+            }
+            var Status = _context.Status.ToDictionary(s => s.StatusId, s => s.StatusName);
+            var Sauces = _context.Sauces.ToDictionary(s => s.SauceId, s => s.SauceName); //map Sauces to dictionary https://learn.microsoft.com/en-us/dotnet/api/system.linq.enumerable.todictionary?view=net-7.0
+
+            return View(userOrders);
+        }
+
+        //Products Edit
+        public async Task<IActionResult> UpdateOrder(int? id)
+        {
+            if (id == null || _context.Orders == null)
+            {
+                return NotFound();
+            }
+
+            var orders = await _context.Orders
+                    .Include(u => u.User)
+                    .FirstOrDefaultAsync(o => o.OrderId == id);
+
+            if (orders == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Status = await _context.Status.ToListAsync();
+            return View(orders);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateOrder(int id, Order orders, string userId)
+        {
+            if (id != orders.OrderId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(orders);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrderExists(orders.OrderId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("AllOrders");
+            }
+            foreach (var modelState in ModelState.Values)
+            {
+                foreach (var error in modelState.Errors)
+                {
+                    Console.WriteLine($"Property: {modelState.Errors}, Error: {error.ErrorMessage}");
+                }
+            }
+
+            return View(orders);
+        }
+
+        private bool OrderExists(int id)
+        {
+            return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
         }
     }
 }

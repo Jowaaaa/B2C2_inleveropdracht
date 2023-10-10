@@ -17,6 +17,7 @@ namespace B2C2Frietzaak.Data
         public DbSet<Sauce> Sauces { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Status> Status { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
