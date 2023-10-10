@@ -7,6 +7,7 @@ School Project using ASP.NET CORE 7, Entity Framework Core and MSSQL Server. The
 - Order Status
 - filling in discord (0.25 -> 25)
 - Unify language throughout the website
+- Routes
 - background size.
 - Update the RemoveFromCart method so it removes 1 if there's move than 1.
 - Add user input for Quantity in Cart.
