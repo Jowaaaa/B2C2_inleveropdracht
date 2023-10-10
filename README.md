@@ -2,10 +2,9 @@
 School Project using ASP.NET CORE 7, Entity Framework Core and MSSQL Server. The premise of this project is to create an online food ordering website for a local fastfood restaurant.
 
 # To Do
-- Price precision. (Discount Price, price in order, total price)
 - Order History for user.
 - Order Status
-- filling in discord (0.25 -> 25)
+- filling in discount (0.25 -> 25)
 - Unify language throughout the website
 - Routes
 - background size.
@@ -20,3 +19,4 @@ School Project using ASP.NET CORE 7, Entity Framework Core and MSSQL Server. The
 - Add Admin input to discounts or special menu items. (done)
 - Add functionality so the admin can upload images -> store Url in DB and Image in wwwroot folder. (done)
 - Add pop-up/modal when ordering with sauce options (done, but differently)
+- Price precision. (Discount Price, price in order, total price)
