@@ -106,7 +106,7 @@ namespace B2C2Frietzaak.Controllers
                 });
             }
 
-            //Serialize to set in session
+            //Serialize to set in session - object -> string
             HttpContext.Session.Set("CartItems", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cartItems)));
 
             int cartItemCount = cartItems.Sum(ci => ci.Quantity);
@@ -164,7 +164,8 @@ namespace B2C2Frietzaak.Controllers
                 UserId = userId,
                 OrderTime = DateTime.Now,
                 Total = cartItems.Sum(item => item.Product.Price * item.Quantity),
-                OrderItems = new List<OrderItem>() //Initialize OrderItems collection
+                OrderItems = new List<OrderItem>(), //Initialize OrderItems collection
+                StatusId = 1 //status "in behandeling"
             };
 
             foreach (var cartItem in cartItems)
@@ -175,7 +176,7 @@ namespace B2C2Frietzaak.Controllers
                     Quantity = cartItem.Quantity,
                     ProductId = cartItem.Product.ProductId,
                     //Set the SauceId for the OrderItem
-                    SauceId = cartItem.Product.SauceId
+                    SauceId = cartItem.Product.SauceId,                  
                 };
 
                 order.OrderItems.Add(orderItem);
@@ -328,6 +329,23 @@ namespace B2C2Frietzaak.Controllers
         private bool OrderExists(int id)
         {
             return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> MyOrders()
+        {
+            var userId = _userManager.GetUserId(User);
+
+            var userOrders = await _context.Orders
+                .Where(o => o.UserId == userId)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+                .ThenInclude(s => s.Sauce)
+                .Include(st => st.Status)
+                .ToListAsync();
+
+            var Sauces = _context.Sauces.ToDictionary(s => s.SauceId, s => s.SauceName);
+
+            return View(userOrders);
         }
     }
 }
