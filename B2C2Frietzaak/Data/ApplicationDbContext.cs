@@ -22,7 +22,7 @@ namespace B2C2Frietzaak.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Relationships
+            //Relationships
             modelBuilder.Entity<Order>()
                 .HasMany(o => o.OrderItems)
                 .WithOne(oi => oi.Order)

@@ -12,7 +12,7 @@ namespace B2C2Frietzaak.Models
 
         public List<Product>? Products { get; set; }
 
-        // Navigatie Properties
+        //Navigatie Properties
         public Product? Product { get; set; }
         public int CartId { get; set; }
         public Cart? Cart { get; set; }

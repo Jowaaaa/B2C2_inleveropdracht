@@ -9,7 +9,7 @@
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
-<body class="bg-dark text-white-50" style="padding-top: 100px">
+<body class="bg-dark text-white-50">
     <div class="card bg-dark text-white">
         <div class="card-header">
             <div class="card-body">
@@ -42,7 +42,11 @@
                 </table>
                 <p class="text-end fw-bold">Totaal: @String.Format("{0:C2}", @totalPrice)</p>
             </div>
-            <a class="btn btn-success" asp-controller="Orders" asp-action="FinalizeOrder">Bestelling Bevestigen</a>
+            <div class="d-flex justify-content-between">               
+                <a asp-action="Orders" class="btn btn-outline-secondary"><i class="bi bi-arrow-90deg-left"></i></a>
+                <a class="btn btn-success" asp-controller="Orders" asp-action="FinalizeOrder">Bestelling Bevestigen</a>
+            </div>
+            
         </div>
     </div>
 </body>

@@ -25,7 +25,7 @@ namespace B2C2Frietzaak.Controllers
 
         public IActionResult ListUsers()
         {
-            var users = userManager.Users;
+            var users = userManager?.Users;
             return View(users);
 
         }

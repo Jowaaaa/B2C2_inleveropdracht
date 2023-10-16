@@ -9,7 +9,7 @@
     <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
-<body class="bg-dark text-white-50" style="padding-top: 100px">
+<body class="bg-dark text-white-50">
     <div class="container">
         <h1>Bestellingen</h1>
 
@@ -18,12 +18,13 @@
             <p>Deze klant heeft geen bestellingen geplaatst.</p>
         }
         else
-        {          
+        {
             @foreach (var order in Model)
             {
                 <div class="d-flex justify-content-start pt-5 text-white">
                     <p class="mx-1">UserID: <a class="fw-bold fst-italic text-white text-decoration-none">@order.UserId</a></p>
-                    <p class="mx-1">Status Bestelling: 
+                    <p class="mx-1">
+                        Status Bestelling:
                         @if (order.Status.StatusName == "Geannuleerd")
                         {
                             <a class="fw-bold fst-italic text-danger text-decoration-none">@order.Status.StatusName</a>
@@ -36,6 +37,7 @@
                         {
                             <a class="fw-bold fst-italic text-success text-decoration-none">@order.Status.StatusName</a>
                         }
+
                     </p>
                     <a class="mx-1 btn btn-outline-danger"
                        asp-action="UpdateOrder"
@@ -43,7 +45,7 @@
                        asp-route-userId="@order.UserId">Status</a>
 
                 </div>
-                <table class="table table-dark text-white table-hover table-striped">                 
+                <table class="table table-dark text-white table-hover table-striped">
                     <thead>
                         <tr>
                             <th>Order ID</th>
@@ -52,12 +54,12 @@
                             <th>Saus</th>
                             <th>Aantal</th>
                         </tr>
-                    </thead>               
-                    <tbody>                        
+                    </thead>
+                    <tbody>
                         @* keep first 2 columns blank if multiple Products in Order *@
                         @foreach (var orderItem in order.OrderItems)
                         {
-                            
+
                             <tr>
                                 @if (order.OrderItems.First() == orderItem)
                                 {
@@ -71,7 +73,7 @@
                                 }
                                 <td>@orderItem.Product.Name</td>
                                 <td>@orderItem.Sauce?.SauceName</td>
-                                <td>@orderItem.Quantity</td>                               
+                                <td>@orderItem.Quantity</td>
                             </tr>
                         }
                     </tbody>
