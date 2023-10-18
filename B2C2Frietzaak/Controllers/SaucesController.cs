@@ -21,11 +21,12 @@ namespace B2C2Frietzaak.Controllers
         {
             return _context.Sauces != null ?
                         View(await _context.Sauces.ToListAsync()) :
-                        Problem("Entity set 'AppDbContext.Products'  is null.");
+                        Problem("Entity set 'AppDbContext.Sauce'  is null.");
         }
 
         public async Task<IActionResult> AddSauce(Sauce sauce)
         {
+
             if (ModelState.IsValid)
             {
                 _context.Add(sauce);

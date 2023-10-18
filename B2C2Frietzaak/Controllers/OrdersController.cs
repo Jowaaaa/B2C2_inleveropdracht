@@ -31,6 +31,7 @@ namespace B2C2Frietzaak.Controllers
 
 
         //Full Overview
+        [HttpGet]
         [Route("/bestellen")]
         public IActionResult Orders()
         {
@@ -56,6 +57,7 @@ namespace B2C2Frietzaak.Controllers
 
 
         //Add to cart method
+        [HttpPost]
         public IActionResult AddToCart(int ProductId, float Price, int Quantity, string Name, int SauceId)
         {
 
@@ -121,6 +123,7 @@ namespace B2C2Frietzaak.Controllers
 
         //button to give overview of full order
         [Route("/bestellingcheck")]
+        [HttpPost]
         public IActionResult OrderCheck()
         {
             List<CartItem> cartItems;
@@ -141,6 +144,7 @@ namespace B2C2Frietzaak.Controllers
 
         //Finalize order and push order to DB
         [Route("/bestellingsucces")]
+        [HttpGet]
         public async Task<IActionResult> FinalizeOrder()
         {
             var userId = _userManager.GetUserId(User);
@@ -191,7 +195,8 @@ namespace B2C2Frietzaak.Controllers
 
 
 
-        //Delete method, reversed Add method :)
+        //Delete method, reversed Add method 
+        [HttpPost]
         public IActionResult DeleteFromOrder(int productId)
         {
 
@@ -223,6 +228,7 @@ namespace B2C2Frietzaak.Controllers
 
 
         //Item Count method used to display the number behind the car in navbar
+        [HttpGet]
         public IActionResult GetCartItemCount()
         {
             List<CartItem> cartItems;
@@ -242,6 +248,7 @@ namespace B2C2Frietzaak.Controllers
             return Json(cartItemCount);
         }
         [Authorize(Roles = "Admin")]
+        [HttpGet]
         //All Orders
         public async Task<IActionResult> AllOrders()
         {
@@ -265,6 +272,7 @@ namespace B2C2Frietzaak.Controllers
         }
 
         //Products Edit
+        [HttpGet]
         public async Task<IActionResult> UpdateOrder(int? id)
         {
             if (id == null || _context.Orders == null)
@@ -330,7 +338,7 @@ namespace B2C2Frietzaak.Controllers
         {
             return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
         }
-
+        [HttpGet]
         public async Task<IActionResult> MyOrders()
         {
             var userId = _userManager.GetUserId(User);
