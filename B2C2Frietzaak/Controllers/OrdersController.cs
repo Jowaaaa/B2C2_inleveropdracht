@@ -167,7 +167,7 @@ namespace B2C2Frietzaak.Controllers
             {
                 UserId = userId,
                 OrderTime = DateTime.Now,
-                Total = cartItems.Sum(item => item.Product.Price * item.Quantity),
+                Total = cartItems.Sum(item => item.Product.Price),
                 OrderItems = new List<OrderItem>(), //Initialize OrderItems collection
                 StatusId = 1 //status "in behandeling"
             };

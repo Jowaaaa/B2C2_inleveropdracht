@@ -10,12 +10,13 @@
     <link href="/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
 </head>
 <body class="bg-dark text-white-50">
+    <div class="min-vh-100"> 
     <div class="card bg-dark text-white">
         <div class="card-header">
             <div class="card-body">
                 @{
                     var totalQuantity = Model.Sum(item => item.Quantity);
-                    var totalPrice = Model.Sum(item => item.Product.Price * item.Quantity);
+                    var totalPrice = Model.Sum(item => item.Product.Price);
                 }
                 <table class="table text-white">
                     <thead>
@@ -33,9 +34,9 @@
                             <tr>
                                 <td>@item.Product.Name</td>
                                 <td>@item.Product.Sauce.SauceName</td>
-                                <td>@String.Format("{0:C2}", @item.Product.Price)</td>
+                                <td>@String.Format("{0:C2}", @item.Product.Price / item.Quantity)</td>
                                 <td>@item.Quantity Stuk(s)</td>
-                                <td>@String.Format("{0:C2}", item.Product.Price * item.Quantity)</td>
+                                <td>@String.Format("{0:C2}", item.Product.Price)</td>
                             </tr>
                         }
                     </tbody>
@@ -48,6 +49,7 @@
             </div>
             
         </div>
+    </div>
     </div>
 </body>
 </html>

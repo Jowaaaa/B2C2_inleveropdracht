@@ -10,20 +10,24 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/InleveropdrachtB2C2Frietzaak.styles.css" asp-append-version="true" />
 </head>
-<body class="bg-image homeBackground text-white-50">
-    <div class="text-center text-white pt-5">
-        <h5>Welkom bij</h5>
-        <h1>De Frietzaak</h1>
-        @if (User.IsInRole("Admin"))
-        {
+<body class="bg-image homeBackground text-white-50 d-flex flex-column min-vh-100">
+    <div class="container">
 
-        }
-        else
-        {
-            <div>
-                <a class="bestelBtn btn-success nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
-            </div>
-        }
+
+        <div class="text-center text-white pt-5">
+            <h5>Welkom bij</h5>
+            <h1>De Frietzaak</h1>
+            @if (User.IsInRole("Admin"))
+            {
+
+            }
+            else
+            {
+                <div>
+                    <a class="bestelBtn btn-success nav-link text-white" asp-area="" asp-controller="Orders" asp-action="Orders">Bestellen</a>
+                </div>
+            }
+        </div>
     </div>
 </body>
 </html>
