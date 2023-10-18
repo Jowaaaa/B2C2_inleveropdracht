@@ -22,11 +22,12 @@ namespace B2C2Frietzaak.Controllers
             _context = context;
             _userManager = userManager;
         }
-
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
         }
+        [HttpGet]
         [Route("/private")] //Changed route to test
         public IActionResult Privacy()
         {

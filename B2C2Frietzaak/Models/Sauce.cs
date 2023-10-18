@@ -7,6 +7,7 @@ namespace B2C2Frietzaak.Models
     {
         public int SauceId { get; set; }
         [Display(Name = "Saus")]
+        [Required]
         public string? SauceName { get; set;}
     }
 }
