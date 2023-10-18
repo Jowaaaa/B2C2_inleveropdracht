@@ -91,29 +91,48 @@ namespace B2C2Frietzaak.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProducts(int id, Product product)
+        public async Task<IActionResult> EditProducts(int id, Product product, IFormFile ImageFile)
         {
             if (id != product.ProductId)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (ImageFile != null && ImageFile.Length > 0)
             {
-                try
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + ImageFile.FileName;
+                var assetDirectory = Path.Combine(_environment.WebRootPath, "Assets");
+                var filePath = Path.Combine(assetDirectory, uniqueFileName);
+
+                if (!Directory.Exists(assetDirectory))
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    Directory.CreateDirectory(assetDirectory);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
                 {
-                    if (!ProductExists(product.ProductId))
+                    await ImageFile.CopyToAsync(fileStream);
+                }
+
+                product.ImageUrl = "Assets/" + uniqueFileName;
+
+                if (ModelState.IsValid)
+                {
+                    try
                     {
-                        return NotFound();
+                        _context.Update(product);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!ProductExists(product.ProductId))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
                 return RedirectToAction("ProductsOverview");
