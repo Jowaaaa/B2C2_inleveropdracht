@@ -16,7 +16,75 @@
     <div class="row min-vh-100">
         <div class="col-md-8">
             <div class="row">
-                @foreach (var group in Model.GroupedProducts)
+                @{
+                    var kortingProducts = Model.GroupedProducts.FirstOrDefault(group => group.Category?.Name == "Korting");
+                    var otherCategories = Model.GroupedProducts.Where(group => group.Category?.Name != "Korting").ToList();
+                }
+                @if (kortingProducts != null)
+                {
+                    <h2 class="mt-5 text-white-50">@kortingProducts.Category.Name</h2>
+                    <div class="row">
+                        @foreach (var product in kortingProducts.Products)
+                        {
+                            <div class="col-md-6">
+                                <div class="col-md-6">
+                                    <form asp-action="AddToCart" method="post">
+                                        <div class="card productCard bg-dark text-white-50 mt-3">
+                                            <div class="card-header text-center">
+                                                <h3>@product.Name</h3>
+                                                <label asp-for="@product.Name" hidden></label>
+                                                <label asp-for="@product.ProductId" hidden></label>
+                                                <div class="card-img-top">
+                                                    <img src="/@product.ImageUrl" width="100" height="100" alt="@product.Name" />
+                                                    <div class="card-footer">
+                                                        @if (product.Discount != null)
+                                                        {
+                                                            var discountedPrice = product.Price - (product.Price * (product.Discount));
+                                                            <label class="text-danger" asp-for="@product.Discount">Korting Prijs: @String.Format("{0:C2}", discountedPrice)</label>
+                                                            <input type="hidden" name="Price" value="@discountedPrice" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <label asp-for="@product.Price">
+                                                                Prijs: @String.Format("{0:C2}", product.Price)
+                                                            </label>
+                                                            <input type="hidden" name="Price" value="@product.Price" />
+                                                        }
+
+                                                        <input type="text" asp-for="@product.Price" hidden />
+                                                        <input type="hidden" name="Name" value="@product.Name" />
+                                                        <input type="hidden" name="ProductId" value="@product.ProductId" />
+                                                        <input type="hidden" name="Quantity" value="1" min="1" />
+                                                        <div class="d-flex justify-content-between">
+                                                            <select class="form-control sauceSelect bg-dark border border-dark text-white-50" id="sauceSelect" name="SauceId">
+                                                                <option class="bi bi-chevron-down" value="">Geen Saus</option>
+                                                                @foreach (var sauce in Model.Sauces)
+                                                                {
+                                                                    <option value="@sauce.SauceId">@sauce.SauceName</option>
+                                                                }
+                                                            </select>
+                                                            <input type="hidden" name="SauceName" value="@product.SauceId" />
+
+                                                            <button type="submit" class="float-end btn btn-outline-success bi bi-cart"
+                                                                    data-bs-toggle="modal" data-bs-target="#sauceModal">
+                                                                Toevoegen
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+                }
+                
+                @foreach (var group in otherCategories)
                 {
                     @if (group.Category != null)
                     {
