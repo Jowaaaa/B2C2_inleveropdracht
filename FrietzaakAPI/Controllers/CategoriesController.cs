@@ -82,7 +82,7 @@ namespace FrietzaakAPI.Controllers
 
         // POST: api/Categories
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<Category>> PostCategory([Bind("Name")] Category category)
         {
           if (_context.Categories == null)
           {
